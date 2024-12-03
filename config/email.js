@@ -13,14 +13,13 @@ const transporter = nodemailer.createTransport({
 });
 
 // Generate a random token for verification
-const generateVerificationToken = () => {
+exports.generateVerificationToken = () => {
   return crypto.randomBytes(32).toString("hex");
 };
 
 // Send a verification email
 exports.sendVerificationEmail = async (userEmail, verificationToken) => {
-  const verificationToken = generateVerificationToken();
-  const verificationLink = `http://localhost:5000/verify-email?token=${verificationToken}`;
+  const verificationLink = `http://localhost:5000/api/auth/verify-email?token=${verificationToken}`;
   
   const mailOptions = {
     from: '"AC FITNESS" technoguru0103@gmail.com', // Sender's name and email
