@@ -17,6 +17,29 @@ const findUserByToken = async (token) => {
     }
 };
 
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+        if (!user.isEmailVerified) return res.status(403).json({ message: 'Please verify your email to access this resource' });
+
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({ token });
+    } catch (err) {
+        res.status(500).json({ message: 'Internal server error', error: err.message });
+    }
+};
+
 exports.signup = router.post(
     '/signup',
     [
@@ -41,7 +64,7 @@ exports.signup = router.post(
             // Send verification email
             await sendVerificationEmail(email, emailVerificationToken);
 
-            res.status(200).json({ message: 'Signup successful, verification email sent' });
+            res.status(200).json({ message: 'Email Sent' });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Server error' });

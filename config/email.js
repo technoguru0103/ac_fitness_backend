@@ -19,7 +19,7 @@ exports.generateVerificationToken = () => {
 
 // Send a verification email
 exports.sendVerificationEmail = async (userEmail, verificationToken) => {
-  const verificationLink = `http://localhost:5000/api/auth/verify-email?token=${verificationToken}`;
+  const verificationLink = `http://2.56.179.38:5000/api/auth/verify-email?token=${verificationToken}`;
   
   const mailOptions = {
     from: '"AC FITNESS" technoguru0103@gmail.com', // Sender's name and email
